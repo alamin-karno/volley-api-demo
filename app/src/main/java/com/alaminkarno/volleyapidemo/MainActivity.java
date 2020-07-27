@@ -3,6 +3,7 @@ package com.alaminkarno.volleyapidemo;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -28,11 +29,46 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         requestQueue = Volley.newRequestQueue(this);
-        URL = "https://jsonplaceholder.typicode.com/todos/1";
+        URL = "https://jsonplaceholder.typicode.com/todos/";
 
         //JSONStringRequest();
 
-        JSONObjectRequest();
+        //JSONObjectRequest();
+
+        JSONArrayRequest();
+    }
+
+    private void JSONArrayRequest() {
+
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, URL, null, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                for(int i = 0; i<response.length(); i++){
+                    try {
+                        JSONObject jsonObject = response.getJSONObject(i);
+
+                        Log.d("karno","User ID: "+jsonObject.getInt("userId")
+                                +"\nID: "+jsonObject.getInt("id")
+                                +"\nThe response is "+jsonObject.getString("title")
+                                +"\nCompleted: "+jsonObject.getBoolean("completed"));
+
+                        Toast.makeText(MainActivity.this, "User ID: "+jsonObject.getInt("userId")
+                                +"\nID: "+jsonObject.getInt("id")
+                                +"\nThe response is "+jsonObject.getString("title")
+                                +"\nCompleted: "+jsonObject.getBoolean("completed"), Toast.LENGTH_SHORT).show();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(MainActivity.this, "Error: "+error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        requestQueue.add(jsonArrayRequest);
     }
 
     private void JSONStringRequest() {
