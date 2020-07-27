@@ -28,11 +28,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         requestQueue = Volley.newRequestQueue(this);
-        URL = "https://www.google.com";
+        URL = "https://jsonplaceholder.typicode.com/todos/1";
 
-        JSONStringRequest();
+        //JSONStringRequest();
 
-       // JSONObjectRequest();
+        JSONObjectRequest();
     }
 
     private void JSONStringRequest() {
@@ -57,7 +57,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(JSONObject response) {
                 try {
-                    Toast.makeText(MainActivity.this, "The response is "+response.getString("title"), Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this,
+                            "User ID: "+response.getInt("userId")
+                                    +"\nID: "+response.getInt("id")
+                                    +"\nThe response is "+response.getString("title")
+                                    +"\nCompleted: "+response.getBoolean("completed"), Toast.LENGTH_LONG).show();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -65,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(MainActivity.this, "Error: Something went wrong", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "Error: "+error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
         requestQueue.add(jsonObjectRequest);
